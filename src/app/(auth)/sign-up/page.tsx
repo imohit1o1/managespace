@@ -16,7 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import axios, { AxiosError } from "axios";
@@ -32,6 +31,7 @@ import {
 } from "@/components/ui/card";
 import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
   const [username, setUsername] = useState("");

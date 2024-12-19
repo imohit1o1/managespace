@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { signInSchema } from "@/schema/authSchema";
 import { signIn } from "next-auth/react";
 import {
