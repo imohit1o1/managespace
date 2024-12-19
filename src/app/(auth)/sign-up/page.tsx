@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import axios, { AxiosError } from "axios";
