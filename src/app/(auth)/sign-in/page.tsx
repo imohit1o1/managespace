@@ -62,7 +62,7 @@ export default function SignInForm() {
       toast({
         title: "Signed in Successfully",
       });
-      router.replace("/dashboard/user");
+      router.push("/dashboard/user");
     }
   };
 

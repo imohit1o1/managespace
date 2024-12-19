@@ -95,7 +95,7 @@ export default function SignUpPage() {
         if (signInResponse?.ok) {
           console.log("Auto-login successful");
           // Redirect to dashboard
-          router.replace("/dashboard/user");
+          router.push("/dashboard/user");
         } else {
           console.error("Auto-login failed");
         }
