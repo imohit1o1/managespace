@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { signinSchema } from "@/schema/authSchema";
+import { signInSchema } from "@/schema/authSchema";
 import type { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
@@ -12,9 +12,12 @@ export default {
             name: "Credentials",
             async authorize(credentials) {
                 try {
+                    console.log("Credentials :", credentials);
+
                     // Validate credentials using zod
-                    const parsedCredentials = signinSchema.parse(credentials);
+                    const parsedCredentials = signInSchema.parse(credentials);
                     const { username, password } = parsedCredentials;
+                    console.log("Credentials", { username, password });
 
                     //Check if user exists
                     const existingUser = await prisma.user.findUnique({
@@ -23,6 +26,7 @@ export default {
                     if (!existingUser) {
                         throw { error: "No user found", status: 401 };
                     }
+                    console.log("Existing user", existingUser);
 
                     // Verify the password
                     if (!existingUser.password) {
@@ -43,6 +47,7 @@ export default {
                         role: existingUser.role,
                     };
 
+                    console.log("User", user);
 
                     // Return the user object
                     return user;

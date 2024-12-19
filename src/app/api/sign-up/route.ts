@@ -1,14 +1,14 @@
 import { hashPassword } from "@/lib/bcrypt-password";
 import { prisma } from "@/lib/prisma";
-import { signupSchema } from "@/schema/authSchema";
+import { signUpSchema } from "@/schema/authSchema";
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
+        console.log("POST", body);
 
         // Validate the request data with Zod
-        const parsed = signupSchema.safeParse(body);
-
+        const parsed = signUpSchema.safeParse(body);
         if (!parsed.success) {
             return Response.json({
                 success: false,
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
         }
 
         const { username, email, password } = parsed.data;
-
+        console.log("Parsed data", parsed.data);
         // Check if username or email already exists
         const existingUser = await prisma.user.findFirst({
             where: { OR: [{ username }, { email }] },
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
                 password: hashedPassword,
             },
         });
-
+        console.log("New user", newUser);
         return Response.json({
             success: true,
             data: newUser,
