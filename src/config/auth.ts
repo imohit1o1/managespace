@@ -16,5 +16,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     //     logo: "/logo.png"
     // },
     ...authConfig,
-
+    trustHost: true,
 })
