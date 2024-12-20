@@ -43,8 +43,6 @@ export default function SignInPage() {
 
   // handle form submission
   const onSubmit = async (data: z.infer<typeof signinSchema>) => {
-    console.log("onSubmit", data);
-
     // Sending form submission to next auth
     const response = await signIn("credentials", {
       username: data.username,
@@ -54,13 +52,11 @@ export default function SignInPage() {
 
     if (response?.error) {
       // handle error (invalid credentials)
-      console.log("Sign-in error", response.error);
       toast({
         title: "Invalid credentials",
       });
     } else {
       // successful sign-in
-      console.log("User signed in successfully");
       toast({
         title: "Signed in Successfully",
       });

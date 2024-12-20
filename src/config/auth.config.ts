@@ -12,39 +12,27 @@ export default {
             name: "Credentials",
             async authorize(credentials) {
                 try {
-                    console.log(
-                        "Authorize function called with credentials:",
-                        credentials
-                    );
                     // Validate credentials using zod
                     const parsedCredentials = signinSchema.parse(credentials);
-
-                    // Destructure validated data
                     const { username, password } = parsedCredentials;
-                    console.log("Pass 1 checked ");
+
                     //Check if user exists
                     const existingUser = await prisma.user.findUnique({
                         where: { username }
                     })
-                    console.log("Exisitng user : ", existingUser);
-
                     if (!existingUser) {
-                        console.log("No user found");
                         throw { error: "No user found", status: 401 };
                     }
 
-                    console.log("Pass 2 Checked");
-                    console.log(existingUser);
                     // Verify the password
                     if (!existingUser.password) {
                         throw new Error("Invalid user data");
                     }
                     const isPasswordValid = await verifyPassword(password, existingUser.password);
-
                     if (!isPasswordValid) {
                         throw new Error("Incorrect Password");
                     }
-                    console.log("Pass 3 Checked");
+
                     const user: User = {
                         id: existingUser.id,
                         name: existingUser.name,
@@ -56,10 +44,8 @@ export default {
 
 
                     // Return the user object
-                    console.log(user);
                     return user;
                 } catch (error) {
-                    console.log("aLL Failed");
                     console.log(error);
                     throw { error: "Something went wrong", status: 401 };
                 }
@@ -72,7 +58,6 @@ export default {
     ],
     callbacks: {
         async jwt({ token, user }) {
-            console.log("JWT callback", { token, user });
             if (user) {
                 token.id = user.id;
                 token.name = user.name;
@@ -84,7 +69,6 @@ export default {
             return token;
         },
         session({ session, token }) {
-            console.log("Session callback", { session, token });
             if (session.user && token) {
                 session.user.id = token.id;
                 session.user.name = token.name;

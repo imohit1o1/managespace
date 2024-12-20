@@ -2,22 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/config/auth"; // Assuming you've configured it in auth.config.js
 
 export async function middleware(request: NextRequest) {
-    console.log("Middleware triggered!");
-    console.log("Request in middleware:", request.method, request.url);
-    console.log("process.env.AUTH_SECRET", process.env.AUTH_SECRET);
-
     const url = request.nextUrl.clone();
     const session = await auth(); // Make sure you're passing the request
-    console.log("Session in Middleware:", session);
 
     if (!session || !session.user) {
-        console.log("User not authenticated");
         if (url.pathname.startsWith("/dashboard")) {
             url.pathname = "/sign-in";
             return NextResponse.redirect(url);
         }
     } else {
-        console.log("User in Middleware:", session.user);
         const role = session.user.role;
 
         // Redirect authenticated users to their respective dashboards
@@ -41,5 +34,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/sign-in", "/sign-up", "/dashboard/:path*"],
+    matcher: [
+        "/sign-in",
+        "/sign-up",
+        "/dashboard/:path*"
+    ],
 };
