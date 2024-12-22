@@ -5,7 +5,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { log } from "util";
 
 interface HoneNavProps {
   user: {
@@ -24,7 +23,9 @@ export default function HomeNav({ user }: HoneNavProps) {
         {user ? (
           <NavigationMenuItem>
             <NavigationMenuLink
-              href={user.role === "user" ? "/dashboard/user" : "/dashboard/admin"}
+              href={
+                user.role === "user" ? "/dashboard/user" : "/dashboard/admin"
+              }
             >
               Dashboard
             </NavigationMenuLink>
