@@ -117,15 +117,15 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center gap-4 min-h-screen">
-      <Card className="p-4">
+    <div className="flex flex-col justify-center items-center gap-y-2 min-h-screen">
+      <Card className="p-0 md:p-4">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Get Started</CardTitle>
           <CardDescription>
             Welcome to ManageSpace - Let&apos;s create your account
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-6">
+        <CardContent className="flex flex-col gap-4">
           {/* Sign Up Form */}
           <Form {...form}>
             <form
@@ -212,11 +212,6 @@ export default function SignUpPage() {
           </Form>
 
           {/* Go To Sign In Page */}
-          {/* <Separator className="relative">
-            <span className="absolute inset-x-2 -top-[11px] px-4 text-sm mx-auto w-max bg-background text-muted-foreground">
-              or
-            </span>
-          </Separator> */}
           <Button
             variant="outline"
             className="w-full py-6"
@@ -236,7 +231,7 @@ export default function SignUpPage() {
           </p>
         </CardContent>
       </Card>
-      <footer className="text-center text-xs text-muted-foreground py-4">
+      <footer className="text-center text-xs text-muted-foreground py-4 max-w-64 md:max-w-full">
         <p>
           By signing up, you agree to our{" "}
           <Link

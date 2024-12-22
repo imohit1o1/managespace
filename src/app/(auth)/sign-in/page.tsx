@@ -27,8 +27,10 @@ import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function SignInPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -43,34 +45,50 @@ export default function SignInPage() {
 
   // handle form submission
   const onSubmit = async (data: z.infer<typeof signinSchema>) => {
-    // Sending form submission to next auth
-    const response = await signIn("credentials", {
-      username: data.username,
-      password: data.password,
-      redirect: false, // prevents redirection to default URL
-    });
-
-    if (response?.error) {
-      // handle error (invalid credentials)
-      toast({
-        title: "Invalid credentials",
+    try {
+      setIsSubmitting(true);
+      // Sending form submission to NextAuth
+      const response = await signIn("credentials", {
+        username: data.username,
+        password: data.password,
+        redirect: false, // prevents redirection to default URL
       });
-    } else {
-      // successful sign-in
+
+      // Check the response for errors
+      if (response?.error) {
+        // Handle error (e.g., invalid credentials)
+        toast({
+          title: "Invalid credentials",
+          description: "Please check your username and password and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Successful sign-in
       toast({
         title: "Signed in Successfully",
       });
       router.replace("/dashboard/user");
+    } catch {
+      // Handle unexpected errors
+      toast({
+        title: "Something went wrong",
+        description: "Unable to sign in. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="flex flex-col justify-center items-center gap-4 min-h-screen">
-      <Card className="p-6">
+      <Card className="p-0 md:p-6 md:w-[400px]">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Welcome Back</CardTitle>
           <CardDescription>
-            Enter your username below to login to your account
+            Please login first to go to the dashboard
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
@@ -116,7 +134,7 @@ export default function SignInPage() {
                 )}
               />
               <Button type="submit" className="w-full py-6 mt-2">
-                Sign In
+                {isSubmitting ? "Signing in..." : "Sign In"}
               </Button>
             </form>
           </Form>
