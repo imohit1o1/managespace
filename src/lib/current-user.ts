@@ -1,4 +1,5 @@
 import { auth } from "@/config/auth";
+import { log } from "console";
 
 export const currentUser = async () => {
   try {
@@ -33,12 +34,13 @@ export const currentUser = async () => {
       message: "User successfully authenticated.",
     };
   } catch (error) {
-    // Handle errors (e.g., session fetch failure)
+    console.log("Unknown error occurred while fetching the user", error);
+
     return {
       user: null,
       loading: false,
       authenticated: false,
-      message: `An error occurred: ${error.message || "Unknown error"}`,
+      message: "Unknown error occurred while fetching the user",
     };
   }
 };
