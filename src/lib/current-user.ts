@@ -1,5 +1,4 @@
 import { auth } from "@/config/auth";
-import { log } from "console";
 
 export const currentUser = async () => {
   try {
