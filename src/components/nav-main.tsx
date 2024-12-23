@@ -19,7 +19,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-const BASE_URL = "http://localhost:3000/dashboard/user";
+const BASE_URL = "/dashboard/user";
 
 export function NavMain({
   items,
