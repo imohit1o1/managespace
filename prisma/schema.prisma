@@ -8,24 +8,22 @@ datasource db {
 }
 
 model Account {
-  id                       String  @id @default(uuid())
+  id                       String   @id @default(uuid())
   type                     String
   provider                 String
   providerAccountId        String
-  refresh_token            String? @db.Text
-  access_token             String? @db.Text
+  refresh_token            String?
+  access_token             String?
   expires_at               Int?
   token_type               String?
   scope                    String?
-  id_token                 String? @db.Text
+  id_token                 String?
   session_state            String?
   refresh_token_expires_in Int?
-
-  userId String @unique
-  user   User?  @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userId                   String   @unique
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  user                     User     @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
 }
@@ -35,12 +33,57 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id])
 
+  @@index([userId])
+}
+
+model User {
+  id            String        @id @default(uuid())
+  name          String?
+  username      String?       @unique
+  email         String?       @unique
+  password      String?
+  role          Role          @default(user)
+  image         String?
+  emailVerified DateTime?
+  status        Status        @default(active)
+  isVerfied     Boolean       @default(false)
+  token         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  accounts      Account?
+  notes         Notes[]
+  notesFolder   NotesFolder[]
+  sessions      Session[]
+}
+
+model Notes {
+  id              String       @id @default(uuid())
+  title           String
+  isPinned        Boolean?     @default(false)
+  isFavorite      Boolean?     @default(false)
+  backgroundColor String?
+  textColor       String?
+  userId          String
+  notesFolderId   String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  description     String
+  notesFolder     NotesFolder? @relation(fields: [notesFolderId], references: [id])
+  user            User         @relation(fields: [userId], references: [id])
+}
+
+model NotesFolder {
+  id        String   @id @default(uuid())
+  name      String
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([userId])
+  notes     Notes[]
+  User      User     @relation(fields: [userId], references: [id])
 }
 
 enum Role {
@@ -51,55 +94,4 @@ enum Role {
 enum Status {
   active
   inactive
-}
-
-model User {
-  id            String    @id @default(uuid())
-  name          String?
-  username      String?   @unique
-  email         String?   @unique
-  password      String?
-  role          Role      @default(user)
-  image         String?
-  emailVerified DateTime?
-
-  accounts Account[]
-  sessions Session[]
-
-  status      Status        @default(active)
-  isVerfied   Boolean       @default(false)
-  token       String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  notes       Notes[]
-  notesFolder NotesFolder[]
-}
-
-model Notes {
-  id              String       @id @default(uuid())
-  title           String
-  content         String
-  isPinned        Boolean?     @default(false)
-  isFavorite      Boolean?     @default(false)
-  backgroundColor String?
-  textColor       String?
-  userId          String
-  user            User         @relation(fields: [userId], references: [id])
-  notesFolderId   String?
-  notesFolder     NotesFolder? @relation(fields: [notesFolderId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model NotesFolder {
-  id    String  @id @default(uuid())
-  name  String
-  notes Notes[]
-
-  User   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

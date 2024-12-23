@@ -46,12 +46,12 @@ const userNavItems = [
     items: [
       {
         title: "Home",
-        url: "#",
+        url: "/",
         icon: House,
       },
       {
         title: "Folders",
-        url: "#",
+        url: "/folders",
         icon: Folders,
       },
     ],
