@@ -5,7 +5,7 @@ import { TaskProgressChart } from "@/components/charts/task-progress-chart";
 import NoteCardStats from "@/components/notes/note-card-stat";
 import { Card } from "@/components/ui/card";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import useNotesFetch from "@/hooks/use-notes-fetch";
+import useNotesFetch from "@/hooks/use-notes-api";
 import React, { useEffect } from "react";
 
 export default function UserDashboard() {

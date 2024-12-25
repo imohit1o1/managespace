@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -6,10 +7,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -21,70 +20,71 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { noteSchema, type NoteSchema } from "@/schema/noteSchema";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import { toast } from "@/hooks/use-toast";
-import axios from "axios";
+import useNoteApi from "@/hooks/use-notes-api";
+import Note from "@/types/interfaces";
+import { useEffect } from "react";
 
 interface NoteFormProps {
-  onNoteCreated: () => void; // Callback to refetch notes after submission
+  isOpen: boolean; // Control dialog open/close state externally
+  onClose: () => void; // Handle closing dialog externally
+  mode: "create" | "edit" | "view"; // Define mode for form behavior
+  defaultValues: NoteSchema | Note;
+  submitButtonText: string;
+  onSuccess: () => void; // Callback to refetch notes after submission
 }
 
-export function NoteForm({ onNoteCreated }: NoteFormProps) {
-  const [loading, setLoading] = useState(false);
-  const [isDialogOpen, setDialogOpen] = useState(false);
+export function NoteForm({
+  isOpen,
+  onClose,
+  mode,
+  defaultValues,
+  submitButtonText,
+  onSuccess,
+}: NoteFormProps) {
+  const { createNote, updateNote, loading } = useNoteApi();
 
   const form = useForm<NoteSchema>({
     resolver: zodResolver(noteSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      isPinned: false,
-      isFavorite: false,
-      backgroundColor: "bg-muted/30",
-      textColor: "text-foreground",
-    },
+    defaultValues,
   });
+
+  useEffect(() => {
+    form.reset(defaultValues); // Reset the form with the new default values
+  }, [defaultValues, form]);
 
   const handleSubmit = async (data: NoteSchema) => {
     try {
-      setLoading(true);
-      await axios.post("/api/notes", data);
-      toast({ title: "Note created successfully!" });
-      onNoteCreated(); // Call the callback to refresh the notes
+      if (mode === "create") {
+        await createNote(data);
+      } else if (mode === "edit") {
+        const noteId = (defaultValues as Note).id;
+        await updateNote(noteId, data);
+      }
+      onClose(); // Close the dialog
+      onSuccess(); // Refresh the notes
+      form.reset(); // Reset the form
     } catch (error) {
       console.error("Error creating note:", error);
-      toast({ title: "Error creating note" });
-    } finally {
-      setLoading(false);
-      setDialogOpen(false);
-      form.reset();
-    }
-  };
-
-  const handleDialogChange = (isOpen: boolean) => {
-    setDialogOpen(isOpen);
-    if (isOpen) {
-      form.reset();
     }
   };
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
-      <DialogTrigger asChild>
-        <Button
-          aria-label="Create a new note"
-          variant="notemenu"
-          size="notemenu"
-          className="fixed bottom-4 right-4 lg:bottom-8 lg:right-8 z-90"
-        >
-          <Plus />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="min-w-[300px] md:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Create Note</DialogTitle>
-          <DialogDescription>
-            Add a new note here. Click save when you&apos;re done.
-          </DialogDescription>
+          <DialogTitle>
+            {mode === "create"
+              ? "Create Note"
+              : mode === "edit"
+              ? "Edit Note"
+              : "View Note"}
+          </DialogTitle>
+          {mode !== "view" && (
+            <DialogDescription>
+              {mode === "create"
+                ? "Add a new note here. Click save when you're done."
+                : "Edit the note here. Click save when you're done."}
+            </DialogDescription>
+          )}
         </DialogHeader>
         <Form {...form}>
           <form
@@ -97,7 +97,11 @@ export function NoteForm({ onNoteCreated }: NoteFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Enter your Title here" {...field} />
+                    <Input
+                      placeholder="Enter your Title here"
+                      disabled={mode === "view"}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -110,9 +114,10 @@ export function NoteForm({ onNoteCreated }: NoteFormProps) {
                 <FormItem>
                   <FormControl>
                     <Textarea
-                      {...field}
                       className="md:h-[300px] h-[200px]"
-                      placeholder="Write your content here..."
+                      placeholder="Write your description here..."
+                      disabled={mode === "view"}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -163,11 +168,17 @@ export function NoteForm({ onNoteCreated }: NoteFormProps) {
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="submit" className="flex-1" disabled={loading}>
-                {loading ? "Saving..." : "Save Note"}
-              </Button>
-            </DialogFooter>
+            {mode !== "view" && (
+              <DialogFooter>
+                <Button type="submit" className="flex-1" disabled={loading}>
+                  {loading
+                    ? mode === "create"
+                      ? "Creating..."
+                      : "Updating..."
+                    : submitButtonText}
+                </Button>
+              </DialogFooter>
+            )}
           </form>
         </Form>
       </DialogContent>
