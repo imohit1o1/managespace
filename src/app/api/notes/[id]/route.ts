@@ -4,7 +4,9 @@ import { noteSchema } from "@/schema/noteSchema";
 import { NextRequest, NextResponse } from "next/server";
 
 // PUT - Update Note
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: {
+    params: Promise<{ id: string }>
+}) {
     const { user } = await currentUser();
     const userId = user.id;
     const { id: noteId } = await params;
@@ -67,7 +69,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE - Delete Note
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: {
+    params: Promise<{ id: string }>
+}) {
     const { user } = await currentUser();
     const userId = user.id;
     const { id: noteId } = await params;
