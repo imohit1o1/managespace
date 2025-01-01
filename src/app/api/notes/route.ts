@@ -89,7 +89,10 @@ export async function POST(req: NextRequest) {
         const parsedData = noteSchema.safeParse(body);
         if (!parsedData.success) {
             return NextResponse.json(
-                { error: true, message: messages.error.notes.validation },
+                {
+                    error: true,
+                    message: messages.warning.notes.validation,
+                },
                 { status: 400 }
             );
         }

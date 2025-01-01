@@ -1,5 +1,3 @@
-import { register } from "module";
-
 export const messages = {
     success: {
         user: {
@@ -45,8 +43,6 @@ export const messages = {
             fetch_error: "An error occurred while fetching the user",
         },
         notes: {
-            validation: "Either title or description must be provided.",
-
             // FETCH ERROR
             fetch: "An error occurred while fetching notes.",
 
@@ -69,5 +65,8 @@ export const messages = {
         username: {
             taken: "Username is already taken",
         },
+        notes: {
+            validation: "Either title or description must be provided.",
+        }
     },
 };

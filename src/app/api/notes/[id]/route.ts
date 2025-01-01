@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest, { params }: {
             return NextResponse.json(
                 {
                     success: false,
-                    message: messages.error.notes.validation
+                    message: messages.warning.notes.validation,
                 },
                 { status: 400 }
             );
