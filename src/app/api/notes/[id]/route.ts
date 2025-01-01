@@ -1,4 +1,5 @@
 import { currentUser } from "@/lib/current-user";
+import { messages } from "@/lib/messages";
 import { prisma } from "@/lib/prisma";
 import { noteSchema } from "@/schema/noteSchema";
 import { NextRequest, NextResponse } from "next/server";
@@ -13,12 +14,13 @@ export async function PUT(req: NextRequest, { params }: {
 
     // Check if noteId is provided
     if (!noteId) {
-        return NextResponse.json({ error: 'Note ID is required.' }, { status: 400 });
-    }
-
-    // Check if noteId is null
-    if (!noteId) {
-        return NextResponse.json({ error: "Note ID is required." }, { status: 400 });
+        return NextResponse.json(
+            {
+                error: true,
+                message: messages.error.notes.id_not_found
+            },
+            { status: 400 }
+        );
     }
 
     try {
@@ -28,11 +30,22 @@ export async function PUT(req: NextRequest, { params }: {
         });
 
         if (!existingNote) {
-            return NextResponse.json({ error: "Note not found." }, { status: 404 });
+            return NextResponse.json(
+                {
+                    error: true,
+                    message: messages.error.notes.not_found,
+                },
+                { status: 404 }
+            );
         }
 
         if (existingNote.userId !== userId) {
-            return NextResponse.json({ error: "Forbidden: You cannot update this note." }, { status: 403 });
+            return NextResponse.json(
+                {
+                    error: true,
+                    message: messages.error.notes.not_update_auth_user
+                },
+                { status: 403 });
         }
 
         const body = await req.json();
@@ -40,7 +53,10 @@ export async function PUT(req: NextRequest, { params }: {
 
         if (!parsedData.success) {
             return NextResponse.json(
-                { error: "Validation failed", details: parsedData.error.errors },
+                {
+                    success: false,
+                    message: messages.error.notes.validation
+                },
                 { status: 400 }
             );
         }
@@ -61,10 +77,21 @@ export async function PUT(req: NextRequest, { params }: {
         });
 
         // Return the updated note as the response
-        return NextResponse.json(updatedNote, { status: 200 });
+        return NextResponse.json(
+            {
+                updatedNote,
+                message: messages.success.notes.update
+            },
+            { status: 200 }
+        );
     } catch (error) {
         console.log("Error updating note:", error);
-        return NextResponse.json({ error: "An error occurred while updating the note." }, { status: 500 });
+        return NextResponse.json(
+            {
+                success: false,
+                messages: messages.error.notes.update
+            }, { status: 500 }
+        );
     }
 }
 
@@ -76,33 +103,62 @@ export async function DELETE(req: NextRequest, { params }: {
     const userId = user.id;
     const { id: noteId } = await params;
 
-    // Check if noteId is null
+    // Check if noteId is provided
     if (!noteId) {
-        return NextResponse.json({ error: "Note ID is required." }, { status: 400 });
+        return NextResponse.json(
+            {
+                error: true,
+                message: messages.error.notes.id_not_found
+            },
+            { status: 400 }
+        );
     }
 
     try {
 
         const existingNote = await prisma.notes.findUnique({
-            where: { id: noteId }, // Prisma expects a string here
+            where: { id: noteId },
         });
 
         if (!existingNote) {
-            return NextResponse.json({ error: "Note not found." }, { status: 404 });
+            return NextResponse.json(
+                {
+                    success: false
+                    , message: messages.error.notes.not_found,
+                },
+                { status: 404 }
+            );
         }
 
         if (existingNote.userId !== userId) {
-            return NextResponse.json({ error: "Forbidden: You cannot delete this note." }, { status: 403 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: messages.error.notes.not_delete_auth_user
+                },
+                { status: 403 });
         }
 
         // Delete the note
         await prisma.notes.delete({
-            where: { id: noteId }, // Prisma expects a string here
+            where: { id: noteId },
         });
 
-        return NextResponse.json({ message: "Note deleted successfully." }, { status: 200 });
+        return NextResponse.json(
+            {
+                success: true,
+                message: messages.success.notes.delete
+            },
+            { status: 200 }
+        );
     } catch (error) {
         console.error("Error deleting note:", error);
-        return NextResponse.json({ error: "An error occurred while deleting the note." }, { status: 500 });
+        return NextResponse.json(
+            {
+                success: false,
+                message: messages.error.notes.delete
+            },
+            { status: 500 }
+        );
     }
 }

@@ -2,7 +2,7 @@ import { currentUser } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
 import { noteSchema } from "@/schema/noteSchema";
 import { NextRequest, NextResponse } from "next/server";
-
+import { messages } from "@/lib/messages";
 interface NotesFilter {
     userId: string;
     isPinned?: boolean;
@@ -56,15 +56,17 @@ export async function GET(req: NextRequest) {
         });
 
         return NextResponse.json({
+            success: true,
             notes,
             totalNotes,
             totalPinnedNotes,
             totalFavoriteNotes,
-        });
+            message: messages.success.notes.fetch
+        }, { status: 200 });
     } catch (error) {
         console.log("Error fetching notes:", error);
         return NextResponse.json(
-            { error: "An error occurred while fetching notes." },
+            { success: false, message: messages.error.notes.fetch },
             { status: 500 }
         );
     }
@@ -87,7 +89,7 @@ export async function POST(req: NextRequest) {
         const parsedData = noteSchema.safeParse(body);
         if (!parsedData.success) {
             return NextResponse.json(
-                { error: "Validation failed", details: parsedData.error.errors },
+                { error: true, message: messages.error.notes.validation },
                 { status: 400 }
             );
         }
@@ -108,12 +110,18 @@ export async function POST(req: NextRequest) {
         });
 
         // Respond with the newly created note
-        return NextResponse.json(newNote, { status: 201 });
+        return NextResponse.json(
+            {
+                success: true,
+                newNote,
+                message: messages.success.notes.create
+            },
+            { status: 201 }
+        );
     } catch (error) {
-        // Log the error with more details
         console.log("Error creating note:", error);
         return NextResponse.json(
-            { error: "An error occurred while creating the note." },
+            { success: false, message: messages.error.notes.create },
             { status: 500 }
         );
     }

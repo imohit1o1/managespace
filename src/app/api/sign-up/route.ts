@@ -1,4 +1,5 @@
 import { hashPassword } from "@/lib/bcrypt-password";
+import { messages } from "@/lib/messages";
 import { prisma } from "@/lib/prisma";
 import { signupSchema } from "@/schema/authSchema";
 
@@ -12,8 +13,7 @@ export async function POST(req: Request) {
         if (!parsed.success) {
             return Response.json({
                 success: false,
-                message: "Validation failed",
-                errors: parsed.error.errors,
+                message: messages.error.signup.user.validation
             }, { status: 400 });
         }
 
@@ -27,8 +27,8 @@ export async function POST(req: Request) {
             return Response.json({
                 success: false,
                 message: existingUser.username === username
-                    ? "Username is already taken"
-                    : "Email address already exists",
+                    ? messages.warning.username.taken
+                    : messages.error.user.email
             }, { status: 400 });
         }
 
@@ -44,15 +44,15 @@ export async function POST(req: Request) {
 
         return Response.json({
             success: true,
-            data: newUser,
-            message: "User registered successfully",
+            newUser,
+            message: messages.success.signup.user.register,
         }, { status: 201 });
 
     } catch (error) {
         console.log("Error registering user", error);
         return Response.json({
             success: false,
-            message: "Error registering user"
+            message: messages.error.signup.user.register
         }, { status: 400 });
     }
 }

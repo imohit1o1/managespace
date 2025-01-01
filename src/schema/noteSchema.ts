@@ -1,3 +1,4 @@
+import { messages } from "@/lib/messages";
 import { z } from "zod";
 
 export const noteSchema = z.object({
@@ -8,7 +9,7 @@ export const noteSchema = z.object({
     backgroundColor: z.string().optional().default("bg-muted/30"),
     textColor: z.string().optional().default("text-foreground"),
 }).refine((data) => data.title || data.description, {
-    message: "Either title or description must be provided.",
+    message: messages.error.notes.validation_failed,
     path: ["title"],
 });
 

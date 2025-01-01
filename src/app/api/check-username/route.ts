@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { usernameValidation } from "@/schema/authSchema";
+import { messages } from "@/lib/messages";
 
 // Zod schema for username validation
 const UsernameQuerySchema = z.object({
@@ -15,8 +16,6 @@ export async function GET(req: Request) {
             username: searchParams.get("username"),
         };
 
-        console.log("Received query params:", queryParam);
-
         // Validate query parameters with zod
         const result = UsernameQuerySchema.safeParse(queryParam);
 
@@ -25,7 +24,7 @@ export async function GET(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: usernameErrors.length > 0 ? usernameErrors.join(", ") : "Invalid query parameters",
+                    message: usernameErrors.length > 0 ? usernameErrors.join(", ") : messages.error.user.username.invalid_query
                 },
                 { status: 400 }
             );
@@ -42,16 +41,17 @@ export async function GET(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "Username is taken",
+                    message: messages.warning.username.taken
                 },
                 { status: 400 }
             );
         }
-        console.log("Username is unique:", username);
+
+        // Returns unique username
         return NextResponse.json(
             {
                 success: true,
-                message: "Username is unique",
+                message: messages.success.user.username.unique,
             },
             { status: 200 }
         );
@@ -60,7 +60,7 @@ export async function GET(req: Request) {
         return NextResponse.json(
             {
                 success: false,
-                message: "Error checking username",
+                message: messages.error.user.username.error
             },
             { status: 500 }
         );

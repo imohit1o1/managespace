@@ -1,4 +1,5 @@
 import { auth } from "@/config/auth";
+import { messages } from "@/lib/messages";
 
 export const currentUser = async () => {
   try {
@@ -11,7 +12,7 @@ export const currentUser = async () => {
         user: null,
         loading: true,
         authenticated: false,
-        message: "Session is still loading. Please wait.",
+        message: messages.error.user.session_loading,
       };
     }
 
@@ -21,7 +22,7 @@ export const currentUser = async () => {
         user: null,
         loading: false,
         authenticated: false,
-        message: "No authenticated user found. Please log in.",
+        message: messages.error.user.session_not_found,
       };
     }
 
@@ -30,7 +31,7 @@ export const currentUser = async () => {
       user: session.user,
       loading: false,
       authenticated: true,
-      message: "User successfully authenticated.",
+      message: messages.success.user.session_found,
     };
   } catch (error) {
     console.log("Unknown error occurred while fetching the user", error);
@@ -39,7 +40,7 @@ export const currentUser = async () => {
       user: null,
       loading: false,
       authenticated: false,
-      message: "Unknown error occurred while fetching the user",
+      message: messages.error.user.fetch_error,
     };
   }
 };
