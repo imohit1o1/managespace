@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import AuthProvider from "@/context/AuthProvider";
+import QueryProvider from "@/context/QueryProvider";
 
 export const metadata: Metadata = {
   title: "ManageSpace",
@@ -20,15 +21,17 @@ export default function RootLayout({
         <head />
         <body>
           <AuthProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-            </ThemeProvider>
-            <Toaster />
+            <QueryProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+              <Toaster />
+            </QueryProvider>
           </AuthProvider>
         </body>
       </html>

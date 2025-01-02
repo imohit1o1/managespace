@@ -13,4 +13,4 @@ export const noteSchema = z.object({
     path: ["title"],
 });
 
-export type NoteSchema = z.infer<typeof noteSchema>;
+export type NoteSchemaType = z.infer<typeof noteSchema>;

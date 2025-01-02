@@ -1,18 +1,10 @@
+import { useNotes } from "@/hooks/use-notes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pin, Sigma, Star } from "lucide-react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
-interface NoteCardStatsProps {
-  totalNotes: number;
-  totalPinnedNotes: number;
-  totalFavoriteNotes: number;
-}
-
-export default function NoteCardStats({
-  totalNotes,
-  totalPinnedNotes,
-  totalFavoriteNotes,
-}: NoteCardStatsProps) {
+export default function NoteStatsCard() {
+  const { totalNotes, totalPinnedNotes, totalFavoriteNotes } = useNotes();
   const noteStats = [
     {
       icon: <Sigma className="w-4 h-4" />,
@@ -39,7 +31,6 @@ export default function NoteCardStats({
       valueColor: "text-yellow-500",
     },
   ];
-
   return (
     <Card>
       <CardHeader className="p-4 pb-0">

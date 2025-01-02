@@ -1,5 +1,10 @@
 export const messages = {
     success: {
+        signup: {
+            user: {
+                register: "User registered successfully",
+            }
+        },
         user: {
             username: {
                 unique: "Username is unique",
@@ -14,11 +19,6 @@ export const messages = {
             delete: "Note Deleted Successfully",
         },
         todos: {},
-        signup: {
-            user: {
-                register: "User registered successfully",
-            }
-        },
     },
     error: {
         signup: {

@@ -2,20 +2,13 @@
 import { DailyGoalsChart } from "@/components/charts/daily-goals-chart";
 import { StorageChart } from "@/components/charts/storage-chart";
 import { TaskProgressChart } from "@/components/charts/task-progress-chart";
-import NoteCardStats from "@/components/notes/note-card-stat";
+import NoteStatsCard from "@/components/dashboard/note-stats-card";
 import { Card } from "@/components/ui/card";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import useNotesFetch from "@/hooks/use-notes-api";
-import React, { useEffect } from "react";
+import React from "react";
 
 export default function UserDashboard() {
   const { user } = useCurrentUser();
-  const { totals, fetchNotes } = useNotesFetch();
-
-  useEffect(() => {
-    fetchNotes();
-  }, [fetchNotes]);
-
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
       {/*Greetings */}
@@ -36,11 +29,7 @@ export default function UserDashboard() {
                 <span>Total Notes: 5,</span>
               </div>
             </Card>
-            <NoteCardStats
-              totalNotes={totals.totalNotes}
-              totalPinnedNotes={totals.totalPinnedNotes}
-              totalFavoriteNotes={totals.totalFavoriteNotes}
-            />
+            <NoteStatsCard />
           </section>
           {/* <DailyGoals /> */}
           <DailyGoalsChart />
