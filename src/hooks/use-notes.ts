@@ -41,18 +41,15 @@ const updateNote = async (noteId: string, updatedNoteData: NoteSchemaType) => {
 };
 
 // Delete a note
-// const deleteNote = async (noteId: string) => {
-//     const response = await axios.delete(`/api/notes/${noteId}`);
-//     return response.data.notes;
-// };
+const deleteNote = async (noteId: string) => {
+    const response = await axios.delete(`/api/notes/${noteId}`);
+    const { success, message } = response.data;
+    if (success) {
+        toast({ title: message, })
+    }
+};
 
 export const useNotes = (currentTab?: string) => {
-    // const [currentTab, setCurrentTab] = useState<string>("all");
-    // const router = useRouter();
-    // useEffect(() => {
-    //     router.push(`/dashboard/user/notes/?tab=${currentTab}`);
-    // }, [currentTab, router]);
-
     const queryClient = useQueryClient();
 
     // 1. Fetching the notes list from the server 
@@ -86,15 +83,12 @@ export const useNotes = (currentTab?: string) => {
     });
 
     // 4. Delete an existing note
-    // const { isPending: isDeleting, mutateAsync: deleteNoteMutate, } = useMutation({
-    //     mutationFn: deleteNote,
-    //     onSuccess: () => {
-    //         queryClient.invalidateQueries({ queryKey: ["fetchedNotes"] }); // Correctly invalidate queries
-    //     },
-    //     onError: (error) => {
-    //         console.log("Error creating note:", error);
-    //     },
-    // });
+    const { isPending: isDeleting, mutateAsync: deleteNoteMutate, } = useMutation({
+        mutationFn: deleteNote,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["fetchedNotes"] });
+        },
+    });
 
     return {
         isFetchingNotes,
@@ -108,8 +102,8 @@ export const useNotes = (currentTab?: string) => {
         createNoteMutate,
         isUpdating,
         updateNoteMutate,
-        // isDeleting,
-        // deleteNoteMutate,
+        isDeleting,
+        deleteNoteMutate,
     };
 };
 

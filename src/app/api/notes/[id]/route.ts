@@ -79,6 +79,7 @@ export async function PUT(req: NextRequest, { params }: {
         // Return the updated note as the response
         return NextResponse.json(
             {
+                success: true,
                 updatedNote,
                 message: messages.success.notes.update
             },
