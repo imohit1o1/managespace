@@ -13,12 +13,18 @@ export const messages = {
             session_found: "User successfully authenticated.",
         },
         notes: {
-            fetch: "Notes Fetched Successfully.",
+            fetch: "All Notes Fetched Successfully.",
             create: "Note Created Successfully",
             update: "Note Updated Successfully",
             delete: "Note Deleted Successfully",
         },
         todos: {},
+        folders: {
+            fetch: "All Folders Fetched Successfully.",
+            create: "Folder Created Successfully",
+            update: "Folder Renamed Successfully",
+            delete: "Folder Deleted Successfully",
+        }
     },
     error: {
         signup: {
@@ -60,13 +66,36 @@ export const messages = {
             delete: "An error occurred while deleting the note",
         },
         todos: {},
+        folders: {
+            // FETCH ERROR
+            fetch: "An error occurred while fetching folders.",
+
+            // CREATE ERROR
+            create: "An error occurred while creating folder.",
+            name_taken: "Folder name must be unique.",
+
+            // UPDATE ERROR
+            id_not_found: "Folder ID is required.",
+            not_found: "Folder not found.",
+            not_update_auth_user: "Forbidden: You cannot rename this folder.",
+            update: "An error occurred while renaming the note.",
+
+            // DELETE ERROR
+            not_delete_auth_user: "Forbidden: You cannot delete this folder.",
+            delete: "An error occurred while deleting the folder.",
+        },
     },
     warning: {
         username: {
-            taken: "Username is already taken",
+            taken: "Username is already taken.",
         },
         notes: {
             validation: "Either title or description must be provided.",
+        },
+        folders: {
+            validation: "Folder name is required.",
+            minlength: "Folder name must have at least 1 character",
+            maxLength: "Folder name must be at most 20 characters."
         }
     },
 };

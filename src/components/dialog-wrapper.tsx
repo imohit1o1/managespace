@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
-
 import { IconType } from "react-icons";
-
 import {
   Dialog,
   DialogContent,
@@ -10,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import Image from "next/image";
 
 type DialogProps = {
   open?: boolean;
@@ -18,6 +17,8 @@ type DialogProps = {
   isBtn?: boolean;
   icon?: IconType;
   btnTitle?: string;
+  dialogIcon?: IconType | string;
+  dialogSize?: string;
   dialogTitle?: string;
   dialogDescription?: string;
   children: React.ReactNode;
@@ -30,6 +31,8 @@ const DialogWrapper = ({
   isBtn,
   btnTitle,
   icon: Icon,
+  dialogIcon: DialogIcon,
+  dialogSize,
   dialogTitle,
   dialogDescription,
   children,
@@ -50,10 +53,26 @@ const DialogWrapper = ({
           ) : null)}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className={dialogSize}>
         <DialogHeader>
+          {DialogIcon && typeof DialogIcon === "string" ? (
+            // If DialogIcon is a string (image URL), render an image
+            <div className="flex justify-center items-center">
+              <Image
+                className="w-20"
+                src={DialogIcon}
+                width={540}
+                height={840}
+                alt="FolderImg"
+              />
+            </div>
+          ) : DialogIcon ? (
+            // If DialogIcon is an IconType (a React component), render the icon
+            <div className="flex justify-center items-center">
+              <DialogIcon size={80} className="text-yellow-400" />
+            </div>
+          ) : null}
           <DialogTitle>{dialogTitle}</DialogTitle>
-
           <DialogDescription>{dialogDescription}</DialogDescription>
         </DialogHeader>
 

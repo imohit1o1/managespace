@@ -40,52 +40,6 @@ model Session {
   @@index([userId])
 }
 
-model User {
-  id            String        @id @default(uuid())
-  name          String?
-  username      String?       @unique
-  email         String?       @unique
-  password      String?
-  role          Role          @default(user)
-  image         String?
-  emailVerified DateTime?
-  status        Status        @default(active)
-  isVerfied     Boolean       @default(false)
-  token         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  accounts      Account?
-  notes         Notes[]
-  notesFolder   NotesFolder[]
-  sessions      Session[]
-}
-
-model Notes {
-  id              String       @id @default(uuid())
-  title           String
-  isPinned        Boolean?     @default(false)
-  isFavorite      Boolean?     @default(false)
-  backgroundColor String?
-  textColor       String?
-  userId          String
-  notesFolderId   String?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  description     String
-  notesFolder     NotesFolder? @relation(fields: [notesFolderId], references: [id])
-  user            User         @relation(fields: [userId], references: [id])
-}
-
-model NotesFolder {
-  id        String   @id @default(uuid())
-  name      String
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  notes     Notes[]
-  User      User     @relation(fields: [userId], references: [id])
-}
-
 enum Role {
   user
   admin
@@ -94,4 +48,53 @@ enum Role {
 enum Status {
   active
   inactive
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  username      String?   @unique
+  email         String?   @unique
+  password      String?
+  role          Role      @default(user)
+  image         String?
+  emailVerified DateTime?
+  status        Status    @default(active)
+  isVerfied     Boolean   @default(false)
+  token         String?
+  accounts      Account?
+  notes         Notes[]
+  folders       Folder[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Notes {
+  id              String   @id @default(uuid())
+  title           String
+  isPinned        Boolean? @default(false)
+  isFavorite      Boolean? @default(false)
+  backgroundColor String?
+  textColor       String?
+  userId          String
+  notesFolderId   String?
+  description     String
+  notesFolders    Folder?  @relation(fields: [notesFolderId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Folder {
+  id             String   @id @default(uuid())
+  name           String   @unique
+  userId         String
+  parentFolderId String?
+  notes          Notes[]
+  user           User     @relation(fields: [userId], references: [id])
+  parentFolder   Folder?  @relation("FolderSubfolders", fields: [parentFolderId], references: [id])
+  subfolders     Folder[] @relation("FolderSubfolders")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
