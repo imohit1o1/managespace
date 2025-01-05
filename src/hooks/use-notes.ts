@@ -6,20 +6,22 @@ import { handleAxiosError } from "@/lib/axios-error-handler";
 import { ApiResponse } from "@/types/ApiResponse";
 import { toast } from "./use-toast";
 
-// Fetch notes whenever the tab changes
-const fetchNotes = async (tab: string = "all") => {
+// 1. Fetch notes whenever the tab changes
+const fetchNotes = async (tab: string = "all", notesFolderId?: string) => {
     try {
-        const response = await axios.get(`/api/notes?tab=${tab}`);
+        const url = notesFolderId ? `/api/notes-folder/${notesFolderId}?tab=${tab}` : `/api/notes?tab=${tab}`;
+        const response = await axios.get(url);
         return response.data;
     } catch (error) {
         return handleAxiosError(error as AxiosError<ApiResponse>, "Error fetching notes");
     }
 };
 
-// Create a note
-const createNote = async (noteData: NoteSchemaType) => {
+// 2. Create a note
+const createNote = async (noteData: NoteSchemaType, notesFolderId?: string) => {
     try {
-        const response = await axios.post("/api/notes", noteData);
+        const url = notesFolderId ? `/api/notes-folder/${notesFolderId}` : `/api/notes`;
+        const response = await axios.post(url, noteData);
         const { success, message, data } = response.data;
         if (success) {
             toast({ title: message, })
@@ -30,7 +32,7 @@ const createNote = async (noteData: NoteSchemaType) => {
     }
 }
 
-// Update a note
+// 3. Update a note
 const updateNote = async (noteId: string, updatedNoteData: NoteSchemaType) => {
     const response = await axios.put(`/api/notes/${noteId}`, updatedNoteData);
     const { success, message, data } = response.data;
@@ -40,7 +42,7 @@ const updateNote = async (noteId: string, updatedNoteData: NoteSchemaType) => {
     }
 };
 
-// Delete a note
+// 4. Delete a note
 const deleteNote = async (noteId: string) => {
     const response = await axios.delete(`/api/notes/${noteId}`);
     const { success, message } = response.data;
@@ -49,25 +51,25 @@ const deleteNote = async (noteId: string) => {
     }
 };
 
-export const useNotes = (currentTab?: string) => {
+export const useNotes = (currentTab: string, notesFolderId?: string) => {
     const queryClient = useQueryClient();
 
-    // 1. Fetching the notes list from the server 
+    // 1. Fetching the notes list from the server based on tab
     const {
         isLoading: isFetchingNotes,
         isError: isFetchingNotesError,
         error: fetchNotesError,
         data: fetchedNotes,
     } = useQuery({
-        queryKey: ["fetchedNotes", currentTab],
-        queryFn: () => fetchNotes(currentTab),
+        queryKey: ["fetchedNotes", currentTab, notesFolderId],
+        queryFn: () => fetchNotes(currentTab, notesFolderId),
     });
 
     const { totalNotes = 0, totalPinnedNotes = 0, totalFavoriteNotes = 0 } = fetchedNotes || {};
 
     // 2. Creating a new note
     const { isPending: isCreating, mutateAsync: createNoteMutate, } = useMutation({
-        mutationFn: createNote,
+        mutationFn: ({ noteData, notesFolderId }: { noteData: NoteSchemaType; notesFolderId?: string }) => (createNote(noteData, notesFolderId)),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["fetchedNotes"] });
         },
@@ -90,11 +92,12 @@ export const useNotes = (currentTab?: string) => {
         },
     });
 
+
     return {
         isFetchingNotes,
         isFetchingNotesError,
         fetchNotesError,
-        fetchedNotes: fetchedNotes?.notes,
+        fetchedNotes: fetchedNotes?.notes || fetchedNotes?.folderNotes,
         totalNotes,
         totalPinnedNotes,
         totalFavoriteNotes,

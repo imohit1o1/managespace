@@ -8,16 +8,23 @@ import { Plus } from "lucide-react";
 import DialogWrapper from "../dialog-wrapper";
 import { useNotes } from "@/hooks/use-notes";
 
-export default function CreateNote() {
+interface CreateNoteProps {
+  notesFolderId?: string;
+}
+
+export default function CreateNote({ notesFolderId }: CreateNoteProps) {
   const [open, setOpen] = useState(false);
   const { isCreating, createNoteMutate } = useNotes();
 
-  const onSubmit = (data: NoteSchemaType) => {
-    createNoteMutate(data, {
-      onSuccess: () => {
-        setOpen(false);
-      },
-    });
+  const onSubmit = (noteData: NoteSchemaType) => {
+    createNoteMutate(
+      { noteData, notesFolderId },
+      {
+        onSuccess: () => {
+          setOpen(false);
+        },
+      }
+    );
   };
 
   return (

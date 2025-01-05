@@ -11,7 +11,7 @@ interface NoteListProps {
 }
 
 export default function NoteList({
-  notes,
+  notes = [],
   isLoading,
   isError,
   error,
