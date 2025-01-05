@@ -51,7 +51,7 @@ const deleteNote = async (noteId: string) => {
     }
 };
 
-export const useNotes = (currentTab: string, notesFolderId?: string) => {
+export const useNotes = (currentTab?: string, notesFolderId?: string) => {
     const queryClient = useQueryClient();
 
     // 1. Fetching the notes list from the server based on tab
