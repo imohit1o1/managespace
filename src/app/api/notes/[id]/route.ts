@@ -65,7 +65,7 @@ export async function PUT(req: NextRequest, { params }: {
 
         // Update the note
         const updatedNote = await prisma.notes.update({
-            where: { id: noteId }, // Prisma expects a string here
+            where: { id: noteId },
             data: {
                 title,
                 description,

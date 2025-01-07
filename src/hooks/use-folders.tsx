@@ -38,11 +38,11 @@ const createFolder = async (notesFolderData: FolderSchemaType) => {
 
 // Update a folder
 const updateFolder = async (
-  folderId: string,
+  notesFolderId: string,
   updatedFolderData: FolderSchemaType
 ) => {
   const response = await axios.put(
-    `/api/folders/${folderId}`,
+    `/api/notes-folder/${notesFolderId}`,
     updatedFolderData
   );
   const { success, message, data } = response.data;
@@ -54,7 +54,7 @@ const updateFolder = async (
 
 // Delete a folder
 const deleteFolder = async (folderId: string) => {
-  const response = await axios.delete(`/api/folders/${folderId}`);
+  const response = await axios.delete(`/api/notes-folder/${folderId}`);
   const { success, message } = response.data;
   if (success) {
     toast({ title: message });
@@ -90,12 +90,12 @@ export const useFolders = () => {
   const { isPending: isUpdatingFolder, mutateAsync: updateFolderMutate } =
     useMutation({
       mutationFn: ({
-        folderId,
+        notesFolderId,
         updatedFolderData,
       }: {
-        folderId: string;
+        notesFolderId: string;
         updatedFolderData: FolderSchemaType;
-      }) => updateFolder(folderId, updatedFolderData),
+      }) => updateFolder(notesFolderId, updatedFolderData),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["fetchedFolders"] });
       },

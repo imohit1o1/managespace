@@ -4,6 +4,8 @@ import { folderSchema } from "@/schema/folderSchema";
 import { prisma } from "@/lib/prisma";
 import { messages } from "@/lib/messages";
 
+
+//! GET - Get the list of folders
 export async function GET() {
     const { user, authenticated, message } = await currentUser();
 
@@ -68,7 +70,7 @@ export async function POST(req: NextRequest) {
         if (!parsedData.success) {
             return NextResponse.json(
                 {
-                    error: true,
+                    success: false,
                     message: messages.warning.folders.validation,
                 },
                 { status: 400 }
@@ -89,8 +91,8 @@ export async function POST(req: NextRequest) {
         if (existingFolder) {
             return NextResponse.json(
                 {
-                    error: true,
-                    message: messages.error.folders.name_taken,
+                    success: false,
+                    message: messages.warning.folders.name_taken,
                 },
                 { status: 400 }
             );

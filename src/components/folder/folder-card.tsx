@@ -3,6 +3,8 @@ import React from "react";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import UpdateFolder from "./update-folder";
+import DeleteFolder from "./delete-folder";
 
 interface FolderCardProps {
   folder: Folder;
@@ -10,8 +12,12 @@ interface FolderCardProps {
 
 export default function FolderCard({ folder }: FolderCardProps) {
   return (
-    <Link href={`folders/${folder.id}`}>
-      <Card className="border rounded-md hover:bg-muted/30">
+    <Card className="border-none hover:border rounded-md hover:bg-muted/30 group relative">
+      <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+        <UpdateFolder notesFolder={folder} />
+        <DeleteFolder folderId={folder.id} />
+      </div>
+      <Link href={`folders/${folder.id}`} className="block">
         <CardHeader className="p-6 pb-2 space-y-0 items-center">
           <Image
             className="w-20"
@@ -21,10 +27,10 @@ export default function FolderCard({ folder }: FolderCardProps) {
             alt="FolderImg"
           />
         </CardHeader>
-        <CardFooter className="justify-center text-center pb-2 overflow-hidden borde border-red-200">
+        <CardFooter className="justify-center text-center pb-2 overflow-hidden">
           {folder.name}
         </CardFooter>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }

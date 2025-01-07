@@ -11,7 +11,7 @@ interface NotesFilter {
     isFavorite?: boolean;
 }
 
-// GET - Get Folder Details By Id
+//! GET - Get Folder Details By Id
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { user, authenticated } = await currentUser();
 
@@ -86,28 +86,29 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             if (queryTab === "favorites") return note.isFavorite;
             return true; // Default to showing all notes if no specific tab is selected
         });
+
         // Return the notes in the folder as the response
         return NextResponse.json(
             {
                 success: true,
                 folderNotes,
-                message: messages.success.folders.update,
+                message: messages.success.notes.fetch,
             },
             { status: 200 }
         );
     } catch (error) {
-        console.log("Error updating notes in the folder:", error);
+        console.log("Error fetching notes in the folder:", error);
         return NextResponse.json(
             {
                 success: false,
-                message: messages.error.folders.update,
+                message: messages.error.notes.fetch,
             },
             { status: 500 }
         );
     }
 }
 
-// POST - Create a note in the folder
+//! POST - Create a note in the folder
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { user, authenticated } = await currentUser();
 
@@ -124,7 +125,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!folderId) {
         return NextResponse.json(
             {
-                error: true,
+                success: false,
                 message: messages.error.folders.id_not_found,
             },
             { status: 400 }
@@ -166,23 +167,23 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             {
                 success: true,
                 newNote,
-                message: messages.success.folders.update,
+                message: messages.success.notes.create,
             },
             { status: 200 }
         );
     } catch (error) {
-        console.log("Error updating notes in the folder:", error);
+        console.log("Error creating notes in the folder:", error);
         return NextResponse.json(
             {
                 success: false,
-                message: messages.error.folders.update,
+                message: messages.error.notes.create,
             },
             { status: 500 }
         );
     }
 }
 
-// PUT - Update Folder
+//! PUT - Update Folder
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { user } = await currentUser();
     const userId = user.id;
@@ -267,7 +268,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 }
 
-// DELETE - Delete Folder
+//! DELETE - Delete Folder
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { user } = await currentUser();
     const userId = user.id;
@@ -310,9 +311,17 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
             );
         }
 
+        // Delete all related notes
+        await prisma.notes.deleteMany({
+            where: {
+                notesFolderId: folderId,
+            },
+        });
+
         // Delete the folder
         await prisma.folder.delete({
             where: { id: folderId },
+            include: { notes: true }
         });
 
         return NextResponse.json(

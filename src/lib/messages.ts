@@ -72,13 +72,12 @@ export const messages = {
 
             // CREATE ERROR
             create: "An error occurred while creating folder.",
-            name_taken: "Folder name must be unique.",
 
             // UPDATE ERROR
             id_not_found: "Folder ID is required.",
             not_found: "Folder not found.",
             not_update_auth_user: "Forbidden: You cannot rename this folder.",
-            update: "An error occurred while renaming the note.",
+            update: "An error occurred while renaming the folder.",
 
             // DELETE ERROR
             not_delete_auth_user: "Forbidden: You cannot delete this folder.",
@@ -94,6 +93,7 @@ export const messages = {
         },
         folders: {
             validation: "Folder name is required.",
+            name_taken: "Folder name must be unique.",
             minlength: "Folder name must have at least 1 character",
             maxLength: "Folder name must be at most 20 characters."
         }
