@@ -201,7 +201,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     try {
-        // Fetch the folder from the database
+        // check if folderId exists in the database or not
         const existingFolder = await prisma.folder.findUnique({
             where: { id: folderId },
         });
@@ -216,6 +216,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             );
         }
 
+        // check if the existing folder belongs to the authenticated user
         if (existingFolder.userId !== userId) {
             return NextResponse.json(
                 {

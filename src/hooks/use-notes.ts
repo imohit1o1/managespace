@@ -97,7 +97,7 @@ export const useNotes = (currentTab?: string, notesFolderId?: string) => {
         isFetchingNotes,
         isFetchingNotesError,
         fetchNotesError,
-        fetchedNotes: fetchedNotes?.notes || fetchedNotes?.folderNotes,
+        fetchedNotes: fetchedNotes?.notes || fetchedNotes?.folderNotes || [],
         totalNotes,
         totalPinnedNotes,
         totalFavoriteNotes,

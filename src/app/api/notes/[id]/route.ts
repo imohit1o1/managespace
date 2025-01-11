@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { noteSchema } from "@/schema/noteSchema";
 import { NextRequest, NextResponse } from "next/server";
 
-// PUT - Update Note
+//! PUT - Update Note
 export async function PUT(req: NextRequest, { params }: {
     params: Promise<{ id: string }>
 }) {
@@ -96,7 +96,7 @@ export async function PUT(req: NextRequest, { params }: {
     }
 }
 
-// DELETE - Delete Note
+//! DELETE - Delete Note
 export async function DELETE(req: NextRequest, { params }: {
     params: Promise<{ id: string }>
 }) {

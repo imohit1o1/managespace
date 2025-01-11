@@ -51,23 +51,28 @@ enum Status {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  name          String?
-  username      String?   @unique
-  email         String?   @unique
-  password      String?
-  role          Role      @default(user)
-  image         String?
-  emailVerified DateTime?
+  id         String      @id @default(uuid())
+  name       String?
+  username   String?     @unique
+  email      String?     @unique
+  password   String?
+  role       Role        @default(user)
+  image      String?
+  notes      Notes[]
+  folders    Folder[]
+  Todos      Todo[]
+  labels     Label[]
+  remarks    Remark[]
+  dailyGoals DailyGoal[]
+
   status        Status    @default(active)
   isVerfied     Boolean   @default(false)
-  token         String?
-  accounts      Account?
-  notes         Notes[]
-  folders       Folder[]
-  sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  emailVerified DateTime?
+
+  accounts  Account?
+  sessions  Session[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Notes {
@@ -89,16 +94,88 @@ model Notes {
 }
 
 model Folder {
-  id             String   @id @default(uuid())
-  name           String   @unique
+  id             String  @id @default(uuid())
+  name           String  @unique
   userId         String
   parentFolderId String?
   notes          Notes[]
-  
-  user           User     @relation(fields: [userId], references: [id])
-  parentFolder   Folder?  @relation("FolderSubfolders", fields: [parentFolderId], references: [id])
-  subfolders     Folder[] @relation("FolderSubfolders")
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  // labels      Label[]
+
+  user         User     @relation(fields: [userId], references: [id])
+  parentFolder Folder?  @relation("FolderSubfolders", fields: [parentFolderId], references: [id])
+  subfolders   Folder[] @relation("FolderSubfolders")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TodoStatus {
+  in_progress
+  pending
+  completed
+  missed
+}
+
+enum TodoPriority {
+  low
+  medium
+  high
+}
+
+model Todo {
+  id          String       @id @default(uuid())
+  userId      String
+  task        String
+  description String?
+  status      TodoStatus   @default(in_progress)
+  priority    TodoPriority @default(low)
+  labels      Label[]      @relation("TodoLabels")
+  date        DateTime
+
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([priority])
+  @@index([userId, date])
+}
+
+model Label {
+  id     String @id @default(uuid())
+  name   String @unique
+  userId String
+  todos  Todo[] @relation("TodoLabels")
+
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Remark {
+  id      String   @id @default(uuid())
+  userId  String
+  content String
+  date    DateTime
+  user    User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, date])
+}
+
+model DailyGoal {
+  id            String   @id @default(uuid())
+  userId        String
+  date          DateTime
+  targetMinutes Int
+  actualMinutes Int
+  progress      Float?
+
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
 }
