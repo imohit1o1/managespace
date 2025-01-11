@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
     } catch (error) {
         // console.log("Error fetching notes:", error); // it throws a null value
         return NextResponse.json(
-            { success: false, message: messages.error.notes.fetch },
+            { success: false, message: messages.error.notes.fetch,error },
             { status: 500 }
         );
     }
