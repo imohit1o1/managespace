@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: messages.warning.dialyGoal.validation,
+                    message: messages.warning.dailyGoals.validation,
                     error: parsedData.error.errors.map((err) => ({
                         path: err.path,
                         message: err.message,
