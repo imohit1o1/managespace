@@ -54,6 +54,7 @@ export async function GET() {
 }
 
 
+//! POST - Create a new label
 export async function POST(req: NextRequest) {
     const { user, authenticated, message } = await currentUser();
     if (!authenticated || !user) {

@@ -1,9 +1,13 @@
 import { z } from "zod";
 
 export const todoSchema = z.object({
-    todo: z.string().min(1, "Todo cannot be empty"),
+    task: z
+        .string()
+        .min(1, "Todo cannot be empty")
+        .trim(),
     description: z
         .string()
+        .trim()
         .optional()
         .default(""),
     status: z

@@ -18,7 +18,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const userId = user.id;
     const { id: labelId } = await params;
 
-    // Check if folderId is provided
+    // Check if labelId is provided
     if (!labelId) {
         return NextResponse.json(
             {

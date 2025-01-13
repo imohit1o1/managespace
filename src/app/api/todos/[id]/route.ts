@@ -2,9 +2,9 @@ import { currentUser } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { messages } from "@/lib/messages";
-import { remarkSchema } from "@/schema/remarkSchema";
+import { todoSchema } from "@/schema/todoSchema";
 
-//! PUT - Update Remark
+//! PUT - Update Todo
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { user, authenticated, message } = await currentUser();
 
@@ -16,37 +16,37 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     const userId = user.id;
-    const { id: remarkId } = await params;
+    const { id: todoId } = await params;
 
-    // Check if remarkId is provided
-    if (!remarkId) {
+    // Check if todoId is provided
+    if (!todoId) {
         return NextResponse.json(
             {
                 success: false,
-                message: messages.error.remarks.id_not_found,
+                message: messages.error.todos.id_not_found,
             },
             { status: 400 }
         );
     }
     try {
-        // check if the remark id exists in the database or not
-        const existingRemarkId = await prisma.remark.findFirst({
-            where: { id: remarkId }
+        // check if the todo id exists in the database or not
+        const existingTodoId = await prisma.todo.findFirst({
+            where: { id: todoId }
         })
 
-        if (!existingRemarkId) {
+        if (!existingTodoId) {
             return NextResponse.json({
                 success: false,
-                message: messages.error.remarks.not_found
+                message: messages.error.todos.not_found
             }, { status: 400 })
         }
 
-        // check if the existing remark belongs to the authenticated user
-        if (existingRemarkId.userId !== userId) {
+        // check if the existing todo belongs to the authenticated user
+        if (existingTodoId.userId !== userId) {
             return NextResponse.json(
                 {
                     error: true,
-                    message: messages.error.remarks.not_update_auth_user,
+                    message: messages.error.todos.not_update_auth_user,
                 },
                 { status: 403 }
             );
@@ -55,14 +55,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         // Recieve the data from the user
         const body = await req.json();
         // Validate the request body with Zod
-        console.log("body: ", { body });
-
-        const parsedData = remarkSchema.safeParse(body);
+        const parsedData = todoSchema.safeParse(body);
         if (!parsedData.success) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: messages.warning.remarks.validation,
+                    message: messages.warning.todos.validation,
                     error: parsedData.error.errors.map((err) => ({
                         path: err.path,
                         message: err.message,
@@ -72,33 +70,40 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             );
         }
 
-        const { content } = parsedData.data;
+        const { task, description, status, priority, labels } = parsedData.data;
 
-        // Update Remark
-        const updatedRemark = await prisma.remark.update({
-            where: { id: remarkId },
+        // update todo
+        const updatedTodo = await prisma.todo.update({
+            where: { id: todoId },
             data: {
-                content,
+                userId: user.id,
+                task,
+                description,
+                status,
+                priority,
+                labels: {
+                    connect: labels.map(label => ({ name: label.name })),
+                },
             },
         });
 
         return NextResponse.json({
             success: true,
             data: {
-                updatedRemark,
+                updatedTodo,
             },
-            message: messages.success.remarks.update
+            message: messages.success.todos.update
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
-            { success: false, message: messages.error.remarks.update, error },
+            { success: false, message: messages.error.todos.update, error },
             { status: 500 }
         );
     }
 }
 
 
-//! DELETE - Delete Remark
+//! DELETE - Delete label
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { user, authenticated, message } = await currentUser();
     if (!authenticated || !user) {
@@ -108,59 +113,60 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         );
     }
     const userId = user.id;
-    const { id: remarkId } = await params;
+    const { id: todoId } = await params;
 
-    // Check if remarkId is provided
-    if (!remarkId) {
+    // Check if todoId is provided
+    if (!todoId) {
         return NextResponse.json(
             {
                 error: true,
-                message: messages.error.remarks.id_not_found,
+                message: messages.error.todos.id_not_found,
             },
             { status: 400 }
         );
     }
+
     try {
-        // check if the remarkId exists in the database or not
-        const existingRemarkId = await prisma.remark.findFirst({
-            where: { id: remarkId }
+        // check if the todo id exists in the database or not
+        const existingTodoId = await prisma.todo.findFirst({
+            where: { id: todoId }
         })
 
-        if (!existingRemarkId) {
+        if (!existingTodoId) {
             return NextResponse.json({
                 success: false,
-                message: messages.error.remarks.not_found
+                message: messages.error.todos.not_found
             }, { status: 400 })
         }
 
-        // check if the existing remark belongs to the authenticated user
-        if (existingRemarkId.userId !== userId) {
+        // check if the existing todo belongs to the authenticated user
+        if (existingTodoId.userId !== userId) {
             return NextResponse.json(
                 {
                     error: true,
-                    message: messages.error.remarks.not_delete_auth_user,
+                    message: messages.error.todos.not_delete_auth_user,
                 },
                 { status: 403 }
             );
         }
 
-        // Delete the existing label
-        const deletedRemark = await prisma.remark.delete({
-            where: { id: remarkId }
+        // Delete the existing todo
+        const deletedTodo = await prisma.todo.delete({
+            where: { id: todoId }
         });
 
         return NextResponse.json(
             {
                 success: true,
-                deletedRemark,
-                message: messages.success.remarks.delete,
+                deletedTodo,
+                message: messages.success.todos.delete,
             },
             { status: 201 }
         );
     } catch (error) {
-        console.log("Error creating remark:", error);
+        console.log("Error creating label:", error);
         return NextResponse.json(
-            { success: false, message: messages.error.remarks.delete, },
+            { success: false, message: messages.error.todos.delete, error },
             { status: 500 }
         );
     }

@@ -1,3 +1,5 @@
+import { DailyGoals } from "@/components/charts/daily-goals";
+
 export const messages = {
     success: {
         signup: {
@@ -38,10 +40,17 @@ export const messages = {
         },
         remarks: {
             fetch: "All Remarks Fetched Successfully.",
-            create: "Remark Added Successfully",
+            create: "Remark Created Successfully",
             update: "Remark Updated Successfully",
             delete: "Remark Deleted Successfully",
-        }
+        },
+        dailyGoals: {
+            fetch: "All Daily Goals Fetched Successfully.",
+            create: "Daily Goal Created Successfully",
+            update: "Daily Goal Updated Successfully",
+            delete: "Daily Goal Deleted Successfully",
+        },
+
     },
     error: {
         signup: {
@@ -149,6 +158,23 @@ export const messages = {
             // DELETE ERROR
             not_delete_auth_user: "Forbidden: You cannot delete this remark.",
             delete: "An error occurred while deleting the remark.",
+        },
+        dailyGoals: {
+            // FETCH ERROR
+            fetch: "An error occurred while fetching Daily Goals.",
+
+            // CREATE ERROR
+            create: "An error occured while creating Daily Goal.",
+
+            // UPDATE ERROR
+            id_not_found: "Daily Goal ID is required.",
+            not_found: "Daily Goal not found.",
+            not_update_auth_user: "Forbidden: You cannot update this Daily Goal.",
+            update: "An error occurred while updating the Daily Goal.",
+
+            // DELETE ERROR
+            not_delete_auth_user: "Forbidden: You cannot delete this Daily Goal.",
+            delete: "An error occurred while deleting the Daily Goals.",
         }
     },
     warning: {
@@ -160,7 +186,7 @@ export const messages = {
             zero: "No Notes found. Try creating a new one.",
         },
         todos: {
-            validation: "Validation Failed.",
+            validation: "Validation Failed for Todo.",
             zero: "No todos found for the selected date. Try creating a new one.",
         },
         folders: {
@@ -179,8 +205,16 @@ export const messages = {
             zero: "No remarks for the selected date. Try adding a new one.",
             minlength: "Remark must have at least 10 character",
             maxLength: "Reamrk must be at most 200 characters.",
-            invalid_date: "Invalid date format",
-            param: "Date parameter is required."
+        },
+        date: {
+            param: "Date parameter is required",
+            invalid: "The provided date is invalid. Please check your date format.",
+        },
+        dailyGoals: {
+            validation: "Validation failed for DailyGoal.",
+            zero: "No daily goals found for the selected date. Try creating a new one.",
+            targetHours: "Hours must be between 0 and 24",
+            targetMinutes: "Minutes must be between 0 and 60",
         }
     },
 };

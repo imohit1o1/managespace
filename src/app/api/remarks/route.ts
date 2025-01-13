@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     // check if the date param is recieved or not
     if (!dateParam) {
         return NextResponse.json(
-            { success: false, message: messages.warning.remarks.param },
+            { success: false, message: messages.warning.date.param },
             { status: 400 }
         );
     }
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
         // Ensure selectedDate is valid
         if (isNaN(selectedDate.getDate())) {
             return NextResponse.json(
-                { success: false, message: messages.warning.remarks.invalid_date },
+                { success: false, message: messages.warning.date.invalid },
                 { status: 400 }
             );
         }
@@ -66,9 +66,10 @@ export async function GET(req: NextRequest) {
         }
 
         // Count total remarks created by the user
-        const totalremarks = await prisma.remark.count({
+        const totalRemarks = await prisma.remark.count({
             where: { userId },
         });
+
         // Count total remarks created by the user on the selected date
         const totalRemarksOnSeletedDate = await prisma.remark.count({
             where: {
@@ -86,7 +87,7 @@ export async function GET(req: NextRequest) {
             data: {
                 remarks,
                 totalRemarksOnSeletedDate,
-                totalremarks,
+                totalRemarks,
             },
             message: messages.success.remarks.fetch
         }, { status: 200 });
@@ -113,7 +114,7 @@ export async function POST(req: NextRequest) {
     // check if the date param is recieved or not
     if (!dateParam) {
         return NextResponse.json(
-            { success: false, message: messages.warning.remarks.param },
+            { success: false, message: messages.warning.date.param },
             { status: 400 }
         );
     }
@@ -124,7 +125,7 @@ export async function POST(req: NextRequest) {
 
         if (isNaN(selectedDate.getTime())) {
             return NextResponse.json(
-                { success: false, message: messages.warning.remarks.invalid_date },
+                { success: false, message: messages.warning.date.invalid },
                 { status: 400 }
             );
         }
