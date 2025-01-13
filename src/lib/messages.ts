@@ -1,5 +1,3 @@
-import { DailyGoals } from "@/components/charts/daily-goals";
-
 export const messages = {
     success: {
         signup: {
