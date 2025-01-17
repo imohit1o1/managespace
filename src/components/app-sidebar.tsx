@@ -15,6 +15,7 @@ import {
   Command,
   House,
   History,
+  CalendarDays,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -38,6 +39,18 @@ const userNavItems = [
     title: "Todos",
     url: "/todos",
     icon: ListTodo,
+    items: [
+      {
+        title: "Home",
+        url: "/",
+        icon: House,
+      },
+      {
+        title: "Calendar",
+        url: "/calendar-planning",
+        icon: CalendarDays,
+      },
+    ],
   },
   {
     title: "Notes",
@@ -123,7 +136,7 @@ const adminNavItems = [
 const navSecondary = [
   {
     title: "Feedback",
-    url: "#",
+    url: "/dashboard/feedback",
     icon: Send,
   },
 ];

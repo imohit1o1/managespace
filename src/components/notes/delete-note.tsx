@@ -12,7 +12,7 @@ export default function DeleteNote({ noteId }: { noteId: string }) {
 
   return (
     <DropdownMenuItem
-      className="cursor-pointer gap-x-2 py-1 text--700"
+      className="cursor-pointer gap-x-2 py-1"
       onClick={handleDeleteNote}
     >
       <DropdownMenuShortcut className="ml-0">

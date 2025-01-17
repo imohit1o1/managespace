@@ -7,6 +7,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ export default function NoteForm({
           control={form.control}
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter your Title here"
@@ -63,9 +65,10 @@ export default function NoteForm({
           control={form.control}
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  className="md:h-[300px] h-[200px]"
+                  className="md:h-[100px] h-[50px]"
                   placeholder="Write your description here..."
                   {...field}
                   disabled={viewMode}

@@ -4,8 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { messages } from "@/lib/messages";
 import { todoSchema } from "@/schema/todoSchema";
 
-type TodoStatus = "in_progress" | "completed" | "pending" | "missed";
-type TodoPriority = "low" | "medium" | "high";
+export type TodoStatus = "in_progress" | "completed" | "pending" | "missed";
+export type TodoPriority = "low" | "medium" | "high";
 
 interface TodoFilter {
     userId: string;
@@ -52,7 +52,6 @@ export async function GET(req: NextRequest) {
             { status: 400 }
         );
     }
-
     const startOfDay = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate(), 0, 0, 0, 0));
     const endOfDay = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate(), 23, 59, 59, 999));
 

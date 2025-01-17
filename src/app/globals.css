@@ -139,6 +139,47 @@ body {
 }
 
 @layer base {
+  :root {
+    --priority-low: 150, 40%, 89.41%;
+    --priority-low-foreground: 120 62.8% 30.6%;
+
+    --priority-medium: 45, 50%, 89.41%;
+    --priority-medium-foreground: 45 62.8% 30.6%;
+
+    --priority-high: 0, 96.3%, 89.41%;
+    --priority-high-foreground: 0, 62.8%, 30.6%;
+
+
+    /* Status Colors */
+    --status-in_progress: 210, 50%, 60%;
+    --status-completed: 140, 40%, 70%;
+    --status-pending: 15, 100%, 65%;
+    --status-missed: 0, 96.3%, 89.41%;
+  }
+
+  .dark {
+    /* Priority Colors */
+    --priority-low: 150, 40%, 60%;
+    /* Deeper Mint Green */
+    --priority-medium: 45, 90%, 50%;
+    /* Rich Amber */
+    --priority-high: 0, 80%, 55%;
+    /* Deeper Red for Dark Theme */
+
+    /* Status Colors */
+    --status-in_progress: 210, 50%, 50%;
+    /* Deep Blue */
+    --status-completed: 140, 40%, 50%;
+    /* Deeper Green */
+    --status-pending: 15, 90%, 55%;
+    /* Deep Orange */
+    --status-missed: 0, 80%, 55%;
+    /* Consistent Deep Red */
+  }
+}
+
+
+@layer base {
   * {
     @apply border-border;
   }

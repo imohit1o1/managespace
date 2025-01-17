@@ -60,7 +60,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             return NextResponse.json(
                 {
                     success: false,
-                    message: messages.warning.todos.validation,
+                    message: messages.warning.dailyGoals.validation,
                     error: parsedData.error.errors.map((err) => ({
                         path: err.path,
                         message: err.message,

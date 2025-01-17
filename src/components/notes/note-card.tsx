@@ -42,7 +42,7 @@ export default function NoteCard({ note }: NoteCardProps) {
           {/* Note Card Menu Opening */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <EllipsisVertical className="w-4 h-4 cursor-pointer" />
+              <EllipsisVertical className="w-4 h-4 cursor-pointer hover:text-primary" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className=" cursor-pointer">
               <DropdownMenuGroup>
