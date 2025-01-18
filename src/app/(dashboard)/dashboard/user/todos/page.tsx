@@ -1,34 +1,10 @@
-"use client";
-import { DatePicker } from "@/components/date-picker";
-import { TodoTable } from "@/components/todo/todo-table";
-import React from "react";
-import { useDateManagement } from "@/hooks/use-date-management"; // Adjust the import path as necessary
-import { useTodo } from "@/hooks/use-todo";
-import CreateTodo from "@/components/todo/create-todo";
+import { Suspense } from "react"; // Import Suspense here
+import TodoHomePage from "@/components/todo/todo-homepage";
 
-export default function Todos() {
-  const { selectedDate, setSelectedDate } = useDateManagement();
-  const {
-    isFetchingTodos,
-    isFetchingTodosError,
-    fetchTodosError,
-    fetchedTodos,
-  } = useTodo(selectedDate);
+export default function TodoPageWrapper() {
   return (
-    <main>
-      <section className="flex flex-col md:flex-row justify-between gap-4 items-center">
-        <DatePicker
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-      </section>
-      <TodoTable
-        isLoading={isFetchingTodos}
-        isError={isFetchingTodosError}
-        error={fetchTodosError}
-        todoList={fetchedTodos}
-      />
-      <CreateTodo selectedDate={selectedDate} />
-    </main>
+    <Suspense fallback={<div>Loading...</div>}>
+      <TodoHomePage />
+    </Suspense>
   );
 }
